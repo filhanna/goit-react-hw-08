@@ -1,6 +1,6 @@
 import css from './Fiender.module.css';
 import PropTypes from 'prop-types';
-import { updateFilter } from '../../redux/contactSlice';
+import { updateFilter } from '../../redux/contacts/slice';
 import { useDispatch } from 'react-redux';
 export const Fiender = ({ value }) => {
   const dispatch = useDispatch();

@@ -1,48 +1,54 @@
-import css from './ContactList.module.css';
-import { useSelector } from 'react-redux';
-
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Typography, CircularProgress, Box } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { deleteContact, fetchContacts } from '../../redux/contactsOps';
-import { selectFilteredContacts } from '../../redux/contactSlice';
+import { deleteContact, fetchContacts } from '../../redux/contacts/operations';
+import { selectFilteredContacts } from '../../redux/contacts/slice';
+import Notiflix from 'notiflix';
 
 export const ContactList = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(selectFilteredContacts);
   const loading = useSelector(state => state.contact.loading);
   const error = useSelector(state => state.contact.error);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
   if (loading) {
-    return <p style={{ width: '100%', textAlign: 'center' }}>Loading...</p>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
+
   if (error) {
-    Notiflix.Notify.error(error);
+   Notiflix.Notify.error(error);
   }
+
   return (
-    <ul className={css.list}>
-      {contacts.map(({ name, id, number }) => {
-        return (
-          <li key={id} className={css.contactListItem}>
-            <div className={css.contactInfo}>
-              <span className={css.contactName}>{name}</span>
-              <span className={css.contactNumber}>{number}</span>
-            </div>
-            <button
-              type="button"
-              onClick={event => {
-                dispatch(deleteContact(event.target.id));
-              }}
-              id={id}
-              className={css.deleteButton}
-            >
-              Delete
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+    <List sx={{ maxWidth: 500, margin: '0 auto' }}>
+      {contacts.map(({ name, id, number }) => (
+        <ListItem key={id} sx={{ borderBottom: '1px solid #ddd' }}>
+          <ListItemText
+            primary={<Typography variant="h6">{name}</Typography>}
+            secondary={<Typography variant="body2" color="text.secondary">{number}</Typography>}
+          />
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="delete" onClick={() => dispatch(deleteContact(id))}>
+              <DeleteIcon sx={{ color: '#777', '&:hover': { color: '#f00' } }} />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      ))}
+    </List>
   );
 };
-ContactList.proptype = {
+
+ContactList.propTypes = {
   contactNames: PropTypes.array.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
