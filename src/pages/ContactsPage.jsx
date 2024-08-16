@@ -4,6 +4,7 @@ import { ContactList } from "../components/ContactList/ContactList";
 import { useEffect } from "react";
 import { fetchContacts, addContact } from "../redux/contacts/operations";
 import { useDispatch, useSelector } from 'react-redux';
+import { Typography } from "@mui/material";
 
 
 const ContactsPage = () => {
@@ -25,8 +26,8 @@ const ContactsPage = () => {
     <>
       <ContactForm initialValues={{ name: '', number: '' }} onSubmit={handleSubmit} />
       <Fiender />
-      <h1>Contacts</h1>
-      <ContactList />
+      <Typography components='h1' textAlign='center' marginTop='20px' variant="h5" fontWeight='bold' >Contacts</Typography>
+      <ContactList  />
     </>
   );
 };

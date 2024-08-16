@@ -1,22 +1,34 @@
-import css from './Fiender.module.css';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { updateFilter } from '../../redux/contacts/slice';
 import { useDispatch } from 'react-redux';
-export const Fiender = ({ value }) => {
+import { updateFilter } from '../../redux/contacts/slice';
+import { TextField } from '@mui/material';
+
+export const Fiender = () => {
   const dispatch = useDispatch();
+
   return (
-    <input
+    <TextField
       type="text"
       placeholder="Search contacts by name"
-      value={value}
-      onChange={event => {
+      onChange={(event) => {
         dispatch(updateFilter(event.target.value));
       }}
-      className={css.formInput}
+      variant="outlined"
+      fullWidth
+      sx={{
+        marginTop: 2,
+        width: 300,
+        display: 'flex',
+        margin: '0 auto',
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 2,
+        },
+      }}
     />
   );
 };
-Fiender.proptype = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
+
+
+
+

@@ -48,7 +48,3 @@ export const ContactList = () => {
   );
 };
 
-ContactList.propTypes = {
-  contactNames: PropTypes.array.isRequired,
-  onDelete: PropTypes.func.isRequired,
-};

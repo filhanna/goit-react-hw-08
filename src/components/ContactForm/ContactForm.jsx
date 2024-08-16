@@ -1,7 +1,9 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import css from './ContactForm.module.css';
+import { TextField, Button, Typography, Box, Paper } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -9,44 +11,90 @@ const FormSchema = Yup.object().shape({
     .required('Phone number is required')
     .matches(/^[0-9]+$/, 'Invalid phone number'),
 });
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(4),
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[3],
+  borderRadius: theme.shape.borderRadius,
+  margin: theme.spacing(4, 'auto'),
+  maxWidth: 500,
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  fontSize: '1.2rem',
+  transition: 'background-color 0.3s ease',
+  '&:hover': {
+    backgroundColor: theme.palette.primary.dark,
+  },
+}));
+
 export const ContactForm = ({ initialValues, onSubmit }) => {
   return (
-    <div className={css.formContainer}>
-      <h1 className={css.formTitle}>Phonebook</h1>
+    <StyledPaper>
+      <Typography variant="h4" gutterBottom>
+        Phonebook
+      </Typography>
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
         validationSchema={FormSchema}
       >
-        <Form autoComplete="off">
-          <label className={css.formLabel}>
-            Name
-            <Field type="text" name="name" className={css.formInput} />
-            <ErrorMessage
-              name="name"
-              component="div"
-              className={css.formError}
-            />
-          </label>
-          <label className={css.formLabel}>
-            Phonenumber
-            <Field type="text" name="number" className={css.formInput} />
-            <ErrorMessage
-              name="number"
-              component="div"
-              className={css.formError}
-            />
-          </label>
-          <button type="submit" className={css.formButton}>
-            Add contact
-          </button>
-        </Form>
+        {({ isSubmitting }) => (
+          <Form autoComplete="off">
+            <Box sx={{ width: '100%' }}>
+              <Field name="name">
+                {({ field }) => (
+                  <StyledTextField
+                    {...field}
+                    label="Name"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    error={Boolean(field.touched && field.error)}
+                    helperText={<ErrorMessage name="name" />}
+                  />
+                )}
+              </Field>
+              <Field name="number">
+                {({ field }) => (
+                  <StyledTextField
+                    {...field}
+                    label="Phone Number"
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    error={Boolean(field.touched && field.error)}
+                    helperText={<ErrorMessage name="number" />}
+                  />
+                )}
+              </Field>
+              <StyledButton
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={isSubmitting}
+              >
+                Add Contact
+              </StyledButton>
+            </Box>
+          </Form>
+        )}
       </Formik>
-    </div>
+    </StyledPaper>
   );
 };
 
-ContactForm.proptype = {
-  initialValue: PropTypes.object.isRequired,
+ContactForm.propTypes = {
+  initialValues: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
